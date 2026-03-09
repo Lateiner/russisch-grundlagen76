@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russisch-Assistent: 10 Paare – Präposition ПОД</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f0f2f5;
+            color: var(--primary);
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .intro-box {
+            background-color: #eef7ff;
+            padding: 15px;
+            border-left: 5px solid var(--secondary);
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .instruction {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #555;
+            text-align: center;
+            background: #fffbe6;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ffe58f;
+        }
+
+        /* Matching Grid */
+        .matching-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .column-header {
+            text-align: center;
+            font-weight: bold;
+            color: var(--secondary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding-bottom: 5px;
+        }
+
+        .card {
+            background: var(--white);
+            border: 2px solid #ddd;
+            padding: 12px 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+        }
+
+        .card:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+            background-color: #f0f8ff;
+        }
+
+        .card.selected {
+            border-color: var(--secondary);
+            background-color: #d1ecf1;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+
+        /* Status Farben */
+        .card.correct-match {
+            cursor: default;
+            border-style: solid;
+        }
+
+        .card.instant-success {
+            background-color: var(--success) !important;
+            color: white !important;
+            border-color: #1e8449 !important;
+        }
+
+        .card.incorrect {
+            background-color: var(--danger) !important;
+            color: white !important;
+            border-color: #c0392b !important;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .btn-reset { background-color: #e67e22; }
+        .btn-solution { background-color: var(--secondary); }
+        button:hover { opacity: 0.9; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .matching-grid { grid-template-columns: 1fr; }
+            .column-header { display: block; margin-top: 10px; }
+            .container { padding: 15px; }
+            button { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Vokabel-Matching: Die Präposition ПОД</h1>
+    
+    <div class="intro-box">
+        <p>In dieser Übung lernst du 10 wichtige Ausdrücke mit <strong>ПОД</strong>. Finde jeweils die russische Wendung und ihre deutsche Entsprechung.</p>
+    </div>
+
+    <p class="instruction">
+        <strong>Bedienung:</strong> Klicke eine Karte links und dann die passende Karte rechts an.
+    </p>
+
+    <div class="matching-grid">
+        <div class="column" id="russian-column">
+            <div class="column-header">Russisch</div>
+        </div>
+        <div class="column" id="german-column">
+            <div class="column-header">Deutsch</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-reset" onclick="resetGame()">Zurücksetzen und mischen</button>
+        <button class="btn-solution" onclick="showSolution()">Lösung anzeigen</button>
+    </div>
+</div>
+
+<script>
+    // Die 10 Paare
+    const pairs = [
+        { ru: "под вечер", de: "gegen Abend", id: 1 },
+        { ru: "под Новый год", de: "kurz vor Neujahr", id: 2 },
+        { ru: "под градусом", de: "angetrunken / einen Schwips haben", id: 3 },
+        { ru: "под шумок", de: "unbemerkt / im Trubel", id: 4 },
+        { ru: "под горячую руку", de: "in die Schusslinie (Zorn) geraten", id: 5 },
+        { ru: "под стать", de: "passend / ebenbürtig", id: 6 },
+        { ru: "поставить под удар", de: "etwas gefährden / riskieren", id: 7 },
+        { ru: "под конец урока", de: "gegen Ende der Stunde", id: 8 },
+        { ru: "под присмотром", de: "unter Aufsicht", id: 9 },
+        { ru: "под защитой", de: "unter Schutz", id: 10 }
+    ];
+
+    // 10 unterschiedliche, gut lesbare Pastellfarben für die Lösung
+    const solutionColors = [
+        "#FFADAD", "#FFD6A5", "#FDFFB6", "#CAFFBF", "#9BF6FF", 
+        "#A0C4FF", "#BDB2FF", "#FFC6FF", "#FFFFFC", "#E2ECE9"
+    ];
+
+    let selectedRU = null;
+    let selectedDE = null;
+    let canClick = true;
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    function initGame() {
+        const ruCol = document.getElementById('russian-column');
+        const deCol = document.getElementById('german-column');
+        
+        // Header sichern
+        const ruHeader = ruCol.querySelector('.column-header');
+        const deHeader = deCol.querySelector('.column-header');
+        
+        ruCol.innerHTML = ''; deCol.innerHTML = '';
+        ruCol.appendChild(ruHeader); deCol.appendChild(deHeader);
+
+        const shuffledRU = shuffle([...pairs]);
+        const shuffledDE = shuffle([...pairs]);
+
+        shuffledRU.forEach(p => ruCol.appendChild(createCard(p.ru, p.id, 'ru')));
+        shuffledDE.forEach(p => deCol.appendChild(createCard(p.de, p.id, 'de')));
+    }
+
+    function createCard(text, id, type) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = text;
+        card.dataset.id = id;
+        card.onclick = () => selectCard(card, type);
+        return card;
+    }
+
+    function selectCard(card, type) {
+        if (!canClick || card.classList.contains('correct-match')) return;
+
+        if (type === 'ru') {
+            if (selectedRU) selectedRU.classList.remove('selected');
+            selectedRU = card;
+        } else {
+            if (selectedDE) selectedDE.classList.remove('selected');
+            selectedDE = card;
+        }
+        card.classList.add('selected');
+
+        if (selectedRU && selectedDE) checkMatch();
+    }
+
+    function checkMatch() {
+        canClick = false;
+        if (selectedRU.dataset.id === selectedDE.dataset.id) {
+            // Erfolg
+            selectedRU.classList.remove('selected');
+            selectedDE.classList.remove('selected');
+            selectedRU.classList.add('correct-match', 'instant-success');
+            selectedDE.classList.add('correct-match', 'instant-success');
+            selectedRU = null; selectedDE = null;
+            canClick = true;
+        } else {
+            // Fehler
+            selectedRU.classList.add('incorrect');
+            selectedDE.classList.add('incorrect');
+            setTimeout(() => {
+                selectedRU.classList.remove('selected', 'incorrect');
+                selectedDE.classList.remove('selected', 'incorrect');
+                selectedRU = null; selectedDE = null;
+                canClick = true;
+            }, 800);
+        }
+    }
+
+    function showSolution() {
+        const allCards = document.querySelectorAll('.card');
+        allCards.forEach(c => {
+            c.className = 'card correct-match';
+            c.style.backgroundColor = '';
+            c.style.color = '#000';
+            c.style.borderColor = '#999';
+        });
+
+        pairs.forEach((pair, index) => {
+            const color = solutionColors[index];
+            const ruCard = document.querySelector(`#russian-column .card[data-id="${pair.id}"]`);
+            const deCard = document.querySelector(`#german-column .card[data-id="${pair.id}"]`);
+            if (ruCard && deCard) {
+                ruCard.style.backgroundColor = color;
+                deCard.style.backgroundColor = color;
+                ruCard.style.borderColor = color;
+                deCard.style.borderColor = color;
+            }
+        });
+    }
+
+    function resetGame() {
+        selectedRU = null; selectedDE = null; canClick = true;
+        initGame();
+    }
+
+    window.onload = initGame;
+</script>
+
+</body>
+</html>
