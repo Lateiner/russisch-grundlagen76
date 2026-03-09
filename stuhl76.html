@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heißer Stuhl: Präposition ПОД</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: var(--primary);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+        }
+
+        /* Timer Bar */
+        .timer-container {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 5px;
+            transition: width 0.1s linear;
+        }
+
+        /* Game Area */
+        .game-box {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .russian-word {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .german-translation {
+            font-size: 1.3rem;
+            color: #555;
+            font-style: italic;
+        }
+
+        /* Buttons */
+        .btn-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-game {
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn-game:active { transform: scale(0.95); }
+        .btn-true { background-color: var(--success); }
+        .btn-false { background-color: var(--danger); }
+
+        /* Results & Start */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .start-btn {
+            background-color: var(--secondary);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .score-display {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Feedback Flash */
+        .flash-correct { background-color: #d4edda !important; }
+        .flash-incorrect { background-color: #f8d7da !important; }
+
+        @media (max-width: 500px) {
+            .russian-word { font-size: 1.6rem; }
+            .german-translation { font-size: 1.1rem; }
+            .btn-game { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <h1>Heißer Stuhl: ПОД-Challenge</h1>
+
+    <!-- Start Overlay -->
+    <div id="start-overlay" class="overlay">
+        <p style="padding: 0 20px;">Entscheide schnell: Stimmt die Übersetzung?<br>Du hast <strong>5 Sekunden</strong> pro Wort!</p>
+        <button class="start-btn" onclick="startGame()">Starten</button>
+    </div>
+
+    <!-- End Overlay (hidden) -->
+    <div id="end-overlay" class="overlay" style="display: none;">
+        <h2>Spiel beendet!</h2>
+        <div class="score-display">Punkte: <span id="final-score">0</span> / 15</div>
+        <button class="start-btn" onclick="startGame()">Nochmal spielen</button>
+    </div>
+
+    <div class="stats" style="font-weight: bold;">
+        Punkte: <span id="current-score">0</span> | Frage: <span id="q-count">1</span>/15
+    </div>
+
+    <div class="timer-container">
+        <div id="timer-bar"></div>
+    </div>
+
+    <div class="game-box">
+        <div class="russian-word" id="ru-display">---</div>
+        <div class="german-translation" id="de-display">---</div>
+    </div>
+
+    <div class="btn-container">
+        <button class="btn-game btn-true" onclick="handleAnswer(true)">Richtig</button>
+        <button class="btn-game btn-false" onclick="handleAnswer(false)">Falsch</button>
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ru: "под вечер", de: "gegen Abend", correct: true },
+        { ru: "под Новый год", de: "kurz vor Neujahr", correct: true },
+        { ru: "под градусом", de: "unter dem Tisch", correct: false }, // Falsch, wäre angetrunken
+        { ru: "под шумок", de: "heimlich / im Trubel", correct: true },
+        { ru: "под горячую руку", de: "in die Schusslinie geraten", correct: true },
+        { ru: "под стать", de: "ebenso / passend", correct: true },
+        { ru: "поставить под удар", de: "ein Projekt abschließen", correct: false }, // Falsch, wäre gefährden
+        { ru: "под конец урока", de: "gegen Ende der Stunde", correct: true },
+        { ru: "под присмотром", de: "unter Aufsicht", correct: true },
+        { ru: "под защитой", de: "unter Schutz", correct: true },
+        { ru: "под вечер", de: "am frühen Morgen", correct: false },
+        { ru: "под шумок", de: "sehr laut", correct: false },
+        { ru: "под градусом", de: "betrunken", correct: true },
+        { ru: "под стать", de: "hässlich", correct: false },
+        { ru: "поставить под удар", de: "gefährden", correct: true }
+    ];
+
+    let currentIdx = 0;
+    let score = 0;
+    let timeLeft = 100;
+    let timerInterval = null;
+    const gameDuration = 5000; // 5 Sekunden
+
+    function startGame() {
+        currentIdx = 0;
+        score = 0;
+        document.getElementById('start-overlay').style.display = 'none';
+        document.getElementById('end-overlay').style.display = 'none';
+        document.getElementById('current-score').textContent = "0";
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        if (currentIdx >= 15) {
+            endGame();
+            return;
+        }
+
+        document.getElementById('q-count').textContent = currentIdx + 1;
+        document.getElementById('ru-display').textContent = data[currentIdx].ru;
+        document.getElementById('de-display').textContent = data[currentIdx].de;
+        
+        resetTimer();
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 100;
+        const bar = document.getElementById('timer-bar');
+        bar.style.width = "100%";
+        bar.style.backgroundColor = "var(--secondary)";
+
+        const startTime = Date.now();
+        timerInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            timeLeft = 100 - (elapsed / gameDuration * 100);
+            
+            bar.style.width = timeLeft + "%";
+
+            if (timeLeft <= 30) bar.style.backgroundColor = "var(--danger)";
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                handleAnswer(null); // Timeout zählt als falsch
+            }
+        }, 50);
+    }
+
+    function handleAnswer(answer) {
+        clearInterval(timerInterval);
+        const correct = data[currentIdx].correct;
+        const container = document.getElementById('main-container');
+
+        if (answer === correct) {
+            score++;
+            document.getElementById('current-score').textContent = score;
+            flashFeedback('flash-correct');
+        } else {
+            flashFeedback('flash-incorrect');
+        }
+
+        currentIdx++;
+        setTimeout(nextQuestion, 300);
+    }
+
+    function flashFeedback(className) {
+        const container = document.getElementById('main-container');
+        container.classList.add(className);
+        setTimeout(() => container.classList.remove(className), 250);
+    }
+
+    function endGame() {
+        document.getElementById('end-overlay').style.display = 'flex';
+        document.getElementById('final-score').textContent = score;
+    }
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+</script>
+
+</body>
+</html>
