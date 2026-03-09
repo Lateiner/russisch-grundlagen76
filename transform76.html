@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformation: Präposition ПОД</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f0f2f5;
+            color: var(--primary);
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+            font-size: 1.6rem;
+        }
+
+        .intro-box {
+            background-color: #eef7ff;
+            padding: 15px;
+            border-left: 5px solid var(--secondary);
+            margin-bottom: 25px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .transformation-card {
+            background: #fff;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .original-sentence {
+            background: #fdf6e3;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #b58900;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .original-sentence small {
+            display: block;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--white);
+            border: 2px solid #ddd;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            border-color: var(--secondary);
+            background-color: #f0f8ff;
+        }
+
+        /* Feedback Colors */
+        .option-btn.correct {
+            background-color: var(--success) !important;
+            color: white !important;
+            border-color: #1e8449 !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--danger) !important;
+            color: white !important;
+            border-color: #c0392b !important;
+        }
+
+        .disabled {
+            pointer-events: none;
+        }
+
+        /* Steuerung */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button.action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .btn-reset { background-color: #e67e22; }
+        .btn-solution { background-color: var(--secondary); }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            button.action-btn { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Satz-Transformation: Idiome mit ПОД</h1>
+    
+    <div class="intro-box">
+        <p>Wähle den Satz aus, der die gleiche Bedeutung hat wie der vorgegebene Satz, aber einen idiomatischen Ausdruck mit <strong>ПОД</strong> verwendet.</p>
+    </div>
+
+    <div id="exercise-container">
+        <!-- JS generiert hier die Karten -->
+    </div>
+
+    <div class="controls">
+        <button class="action-btn btn-reset" onclick="initGame()">Neu mischen & starten</button>
+        <button class="action-btn btn-solution" onclick="showAllSolutions()">Lösungen anzeigen</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            original: "Он немного пьян.",
+            hint: "(Er ist ein bisschen betrunken.)",
+            options: [
+                "Он немного под градусом.",
+                "Он немного под шумок.",
+                "Он немного под стать."
+            ],
+            correct: 0
+        },
+        {
+            original: "Я обычно устаю ближе к вечеру.",
+            hint: "(Ich werde meistens gegen Abend müde.)",
+            options: [
+                "Я обычно устаю под вечер.",
+                "Я обычно устаю под присмотром.",
+                "Я обычно устаю под удар."
+            ],
+            correct: 0
+        },
+        {
+            original: "Он ушёл незаметно, пока все были заняты.",
+            hint: "(Er ging unbemerkt, während alle beschäftigt waren.)",
+            options: [
+                "Он ушёл под горячую руку.",
+                "Он ушёл под шумок.",
+                "Он ушёл под защиту."
+            ],
+            correct: 1
+        },
+        {
+            original: "Мы купили подарки в конце декабря.",
+            hint: "(Wir kauften die Geschenke kurz vor Neujahr.)",
+            options: [
+                "Мы купили подарки под Новый год.",
+                "Мы купили подарки под вечер.",
+                "Мы купили подарки под стать."
+            ],
+            correct: 0
+        },
+        {
+            original: "Начальник был злой, и ты попал под его гнев.",
+            hint: "(Der Chef war wütend und du hast seinen Zorn abbekommen.)",
+            options: [
+                "Ты попал под присмотр.",
+                "Ты попал под горячую руку.",
+                "Ты поставил проект под удар."
+            ],
+            correct: 1
+        },
+        {
+            original: "Эта сумка идеально подходит к платью.",
+            hint: "(Diese Tasche passt ideal zum Kleid.)",
+            options: [
+                "Эта сумка под стать платью.",
+                "Эта сумка под шумок платью.",
+                "Эта сумка под градусом."
+            ],
+            correct: 0
+        },
+        {
+            original: "Твои действия рискованны для компании.",
+            hint: "(Deine Handlungen gefährden die Firma.)",
+            options: [
+                "Ты ставишь компанию под защиту.",
+                "Ты ставишь компанию под удар.",
+                "Ты ставишь компанию под вечер."
+            ],
+            correct: 1
+        },
+        {
+            original: "Вопросы начались в конце урока.",
+            hint: "(Die Fragen begannen gegen Ende der Stunde.)",
+            options: [
+                "Вопросы начались под Новый год.",
+                "Вопросы начались под конец урока.",
+                "Вопросы начались под стать."
+            ],
+            correct: 1
+        },
+        {
+            original: "Ребёнок играет, а мама наблюдает за ним.",
+            hint: "(Das Kind spielt und die Mutter beaufsichtigt es.)",
+            options: [
+                "Ребёнок играет под присмотром мамы.",
+                "Ребёнок играет под защитой мамы.",
+                "Ребёнок играет под градусом мамы."
+            ],
+            correct: 0
+        },
+        {
+            original: "Мы в безопасности благодаря полиции.",
+            hint: "(Wir sind dank der Polizei in Sicherheit/geschützt.)",
+            options: [
+                "Мы под стать полиции.",
+                "Мы под защитой полиции.",
+                "Мы под горячую руку полиции."
+            ],
+            correct: 1
+        }
+    ];
+
+    let userStates = [];
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    function initGame() {
+        const container = document.getElementById('exercise-container');
+        container.innerHTML = '';
+        userStates = quizData.map(() => ({ answered: false, selected: null }));
+
+        // Aufgaben mischen
+        const shuffledIndices = shuffle([...Array(quizData.length).keys()]);
+
+        shuffledIndices.forEach((originalIdx, displayIdx) => {
+            const data = quizData[originalIdx];
+            const card = document.createElement('div');
+            card.className = 'transformation-card';
+            card.id = `card-${originalIdx}`;
+
+            // Optionen für diese Karte ebenfalls mischen
+            const optionIndices = [0, 1, 2];
+            const shuffledOptionIndices = shuffle([...optionIndices]);
+
+            let optionsHtml = shuffledOptionIndices.map(optIdx => `
+                <button class="option-btn" 
+                        onclick="checkAnswer(${originalIdx}, ${optIdx}, this)" 
+                        data-correct="${optIdx === data.correct}">
+                    ${data.options[optIdx]}
+                </button>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="original-sentence">
+                    <small>Satz ohne Idiom:</small>
+                    ${data.original} <br>
+                    <small style="margin-top:5px; display:inline-block;">${data.hint}</small>
+                </div>
+                <div class="options-grid">
+                    ${optionsHtml}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    window.checkAnswer = (qIdx, optIdx, btn) => {
+        if (userStates[qIdx].answered) return;
+
+        const isCorrect = optIdx === quizData[qIdx].correct;
+        userStates[qIdx].answered = true;
+        userStates[qIdx].selected = optIdx;
+
+        // Feedback
+        if (isCorrect) {
+            btn.classList.add('correct');
+        } else {
+            btn.classList.add('incorrect');
+            // Richtige Antwort markieren
+            const correctBtn = Array.from(btn.parentNode.children).find(b => b.getAttribute('data-correct') === 'true');
+            correctBtn.classList.add('correct');
+        }
+
+        // Andere Buttons deaktivieren
+        Array.from(btn.parentNode.children).forEach(b => b.classList.add('disabled'));
+    };
+
+    window.showAllSolutions = () => {
+        quizData.forEach((data, qIdx) => {
+            if (userStates[qIdx].answered) return;
+            
+            const card = document.getElementById(`card-${qIdx}`);
+            const buttons = card.querySelectorAll('.option-btn');
+            
+            buttons.forEach(btn => {
+                if (btn.getAttribute('data-correct') === 'true') {
+                    btn.classList.add('correct');
+                }
+                btn.classList.add('disabled');
+            });
+            userStates[qIdx].answered = true;
+        });
+    };
+
+    // Spielstart
+    initGame();
+</script>
+
+</body>
+</html>
