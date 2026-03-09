@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory-Profi: Präposition ПОД</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --card-back: #34495e;
+            --shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: var(--primary);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+        }
+
+        .stats {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Memory Grid */
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            perspective: 1000px;
+            margin-bottom: 25px;
+            min-height: 450px; /* Verhindert Springen des Layouts */
+        }
+
+        .memory-card {
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s, opacity 0.5s, visibility 0.5s;
+            cursor: pointer;
+        }
+
+        .memory-card.flip {
+            transform: rotateY(180deg);
+        }
+
+        /* Gefundene Paare ausblenden */
+        .memory-card.matched {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Lösung-Modus: Karten wieder einblenden */
+        .memory-card.solution-active {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: rotateY(180deg);
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .card-front, .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            padding: 8px;
+            box-sizing: border-box;
+            font-weight: bold;
+            font-size: 0.9rem;
+            user-select: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card-front {
+            background-color: var(--card-back);
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .card-back {
+            background-color: white;
+            border: 2px solid var(--secondary);
+            transform: rotateY(180deg);
+            color: #222;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 1rem;
+            transition: transform 0.1s, filter 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .btn-reset { background-color: #e67e22; }
+        .btn-solution { background-color: var(--secondary); }
+        button:hover { filter: brightness(1.1); }
+
+        /* Responsive Layout */
+        @media (max-width: 650px) {
+            .memory-game { grid-template-columns: repeat(3, 1fr); gap: 8px; min-height: 350px; }
+            .memory-card { height: 85px; }
+            .card-back { font-size: 0.75rem; }
+            button { width: 100%; }
+        }
+
+        @media (max-width: 400px) {
+            .memory-game { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Memory: Die Präposition ПОД</h1>
+    
+    <div class="stats">
+        <span>Züge: <span id="moves">0</span></span>
+        <span>Paare: <span id="matches">0</span>/10</span>
+    </div>
+
+    <div class="memory-game" id="game-board">
+        <!-- Karten werden hier generiert -->
+    </div>
+
+    <div class="controls">
+        <button class="btn-reset" onclick="resetGame()">Neu mischen und starten</button>
+        <button class="btn-solution" onclick="showSolution()">Lösung anzeigen</button>
+    </div>
+</div>
+
+<script>
+    const pairs = [
+        { ru: "под вечер", de: "gegen Abend", id: 1 },
+        { ru: "под Новый год", de: "kurz vor Neujahr", id: 2 },
+        { ru: "под градусом", de: "angetrunken", id: 3 },
+        { ru: "под шумок", de: "heimlich / im Trubel", id: 4 },
+        { ru: "под горячую руку", de: "in die Schusslinie geraten", id: 5 },
+        { ru: "под стать", de: "passend / ebenbürtig", id: 6 },
+        { ru: "поставить под удар", de: "etwas gefährden", id: 7 },
+        { ru: "под конец урока", de: "gegen Ende der Stunde", id: 8 },
+        { ru: "под присмотром", de: "unter Aufsicht", id: 9 },
+        { ru: "под защитой", de: "unter Schutz", id: 10 }
+    ];
+
+    // 10 individuelle Farben für die Lösung
+    const colors = [
+        "#FFADAD", "#FFD6A5", "#FDFFB6", "#CAFFBF", "#9BF6FF", 
+        "#A0C4FF", "#BDB2FF", "#FFC6FF", "#FFFFFC", "#E2ECE9"
+    ];
+
+    let flippedCards = [];
+    let moves = 0;
+    let matches = 0;
+    let lockBoard = false;
+
+    // Funktion zum Mischen und Erstellen des Boards
+    function initBoard() {
+        const board = document.getElementById('game-board');
+        board.innerHTML = '';
+        
+        let deck = [];
+        pairs.forEach(p => {
+            deck.push({ text: p.ru, id: p.id });
+            deck.push({ text: p.de, id: p.id });
+        });
+
+        // Fisher-Yates Shuffle Algorithmus
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+
+        deck.forEach(data => {
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.id = data.id;
+            
+            card.innerHTML = `
+                <div class="card-front">?</div>
+                <div class="card-back">${data.text}</div>
+            `;
+            
+            card.addEventListener('click', flipCard);
+            board.appendChild(card);
+        });
+    }
+
+    function flipCard() {
+        if (lockBoard) return;
+        if (this === flippedCards[0]) return;
+        if (this.classList.contains('matched')) return;
+
+        this.classList.add('flip');
+        flippedCards.push(this);
+
+        if (flippedCards.length === 2) {
+            checkMatch();
+        }
+    }
+
+    function checkMatch() {
+        lockBoard = true;
+        moves++;
+        document.getElementById('moves').textContent = moves;
+
+        const isMatch = flippedCards[0].dataset.id === flippedCards[1].dataset.id;
+
+        if (isMatch) {
+            matches++;
+            document.getElementById('matches').textContent = matches;
+            
+            setTimeout(() => {
+                flippedCards.forEach(c => {
+                    c.classList.add('matched');
+                });
+                resetTurn();
+                
+                if (matches === pairs.length) {
+                    setTimeout(() => alert(`Glückwunsch! Alle Paare gefunden in ${moves} Zügen!`), 200);
+                }
+            }, 600);
+        } else {
+            setTimeout(() => {
+                flippedCards.forEach(c => c.classList.remove('flip'));
+                resetTurn();
+            }, 1000);
+        }
+    }
+
+    function resetTurn() {
+        flippedCards = [];
+        lockBoard = false;
+    }
+
+    // Die gewünschte Reset-Funktion: Mischen und Starten
+    function resetGame() {
+        moves = 0;
+        matches = 0;
+        document.getElementById('moves').textContent = "0";
+        document.getElementById('matches').textContent = "0";
+        lockBoard = false;
+        flippedCards = [];
+        initBoard();
+    }
+
+    function showSolution() {
+        lockBoard = true; // Spiel pausieren
+        const allCards = document.querySelectorAll('.memory-card');
+        
+        allCards.forEach(card => {
+            const id = parseInt(card.dataset.id);
+            const color = colors[id - 1]; // Farbe anhand der ID zuweisen
+            
+            card.classList.add('solution-active');
+            const back = card.querySelector('.card-back');
+            back.style.backgroundColor = color;
+            back.style.borderColor = "#555";
+            back.style.color = "#000";
+        });
+    }
+
+    // Beim Laden der Seite das erste Mal mischen
+    window.onload = initBoard;
+</script>
+
+</body>
+</html>
