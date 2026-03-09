@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Situations-Quiz: Präposition ПОД</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f0f2f5;
+            color: var(--primary);
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .intro-box {
+            background-color: #eef7ff;
+            padding: 15px;
+            border-left: 5px solid var(--secondary);
+            margin-bottom: 25px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        /* Quiz Card */
+        .quiz-card {
+            background: #fff;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .visual-box {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 10px;
+            background: #fdfdfd;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .situation-desc {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--white);
+            border: 2px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover {
+            border-color: var(--secondary);
+            background-color: #f0f8ff;
+        }
+
+        /* Status Styles */
+        .quiz-card.correct { border-color: var(--success); background-color: #f0fff4; }
+        .quiz-card.incorrect { border-color: var(--danger); background-color: #fff5f5; }
+
+        .option-btn.selected-correct {
+            background-color: var(--success);
+            color: white;
+            border-color: #1e8449;
+        }
+
+        .option-btn.selected-incorrect {
+            background-color: var(--danger);
+            color: white;
+            border-color: #c0392b;
+        }
+
+        /* Controls */
+        .card-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button.action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .btn-reset { background-color: #e67e22; }
+        .btn-solution { background-color: var(--secondary); }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .option-btn { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Bild-Situations-Zuordnung: ПОД</h1>
+    
+    <div class="intro-box">
+        <p>Analysiere die visuelle Situation und wähle den passenden russischen Ausdruck mit <strong>ПОД</strong> aus. Achte auf den Kontext!</p>
+    </div>
+
+    <div id="quiz-container">
+        <!-- JS generiert hier 10 Aufgaben -->
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            visual: "🏢 😠 🗯️",
+            desc: "Ein wütender Chef schreit einen unbeteiligten Mitarbeiter an.",
+            options: ["под присмотром", "попасть под горячую руку", "под шумок"],
+            correct: 1
+        },
+        {
+            visual: "🌇 😴 ☕",
+            desc: "Die Sonne geht unter und man fühlt sich langsam müde.",
+            options: ["под вечер", "под Новый год", "под градусом"],
+            correct: 0
+        },
+        {
+            visual: "🤫 🏃‍♂️ 💎",
+            desc: "Jemand stiehlt etwas, während alle anderen laut feiern.",
+            options: ["под стать", "поставить под удар", "под шумок"],
+            correct: 2
+        },
+        {
+            visual: "🎄 🎁 ✨",
+            desc: "Es ist der 31. Dezember und Geschenke werden vorbereitet.",
+            options: ["под вечер", "под Новый год", "под конец урока"],
+            correct: 1
+        },
+        {
+            visual: "🥂 🥴 😵",
+            desc: "Jemand hat zu viel Wodka getrunken und schwankt ein wenig.",
+            options: ["под присмотром", "под градусом", "под защитой"],
+            correct: 1
+        },
+        {
+            visual: "👰 ❤️ 🤵",
+            desc: "Ein Paar, das optisch und charakterlich perfekt zusammenpasst.",
+            options: ["под стать", "под шумок", "под горячую руку"],
+            correct: 0
+        },
+        {
+            visual: "⚠️ 📉 💣",
+            desc: "Eine unvorsichtige Handlung gefährdet die ganze Firma.",
+            options: ["под защитой", "поставить под удар", "под присмотром"],
+            correct: 1
+        },
+        {
+            visual: "🔔 🎒 ⌛",
+            desc: "Die Glocke läutet gleich, die Schüler packen ihre Sachen.",
+            options: ["под Новый год", "под вечер", "под конец урока"],
+            correct: 2
+        },
+        {
+            visual: "👮 🛡️ 🏛️",
+            desc: "Ein Zeuge wird von der Polizei rund um die Uhr bewacht.",
+            options: ["под защитой", "под градусом", "под шумок"],
+            correct: 0
+        },
+        {
+            visual: "👶 👁️ 👩‍🦰",
+            desc: "Ein Kind spielt im Garten, während die Mutter genau hinschaut.",
+            options: ["под горячую руку", "под присмотром", "под стать"],
+            correct: 1
+        }
+    ];
+
+    let userStates = quizData.map(() => ({ selected: null, showSolution: false }));
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+
+        quizData.forEach((data, idx) => {
+            const state = userStates[idx];
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+            
+            if (state.selected !== null) {
+                card.className += (state.selected === data.correct) ? ' correct' : ' incorrect';
+            }
+
+            let optionsHtml = data.options.map((opt, oIdx) => {
+                let statusClass = '';
+                if (state.showSolution && oIdx === data.correct) statusClass = 'selected-correct';
+                else if (state.selected === oIdx) {
+                    statusClass = (oIdx === data.correct) ? 'selected-correct' : 'selected-incorrect';
+                }
+
+                return `<button class="option-btn ${statusClass}" onclick="makeChoice(${idx}, ${oIdx})">
+                            ${opt}
+                        </button>`;
+            }).join('');
+
+            card.innerHTML = `
+                <div class="visual-box">${data.visual}</div>
+                <span class="situation-desc">${data.desc}</span>
+                <div class="options-container">
+                    ${optionsHtml}
+                </div>
+                <div class="card-controls">
+                    <button class="action-btn btn-reset" onclick="resetTask(${idx})">Reset</button>
+                    <button class="action-btn btn-solution" onclick="solveTask(${idx})">Lösung</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    window.makeChoice = (qIdx, oIdx) => {
+        if (userStates[qIdx].showSolution) return; // Gesperrt wenn Lösung gezeigt
+        userStates[qIdx].selected = oIdx;
+        renderQuiz();
+    };
+
+    window.resetTask = (idx) => {
+        userStates[idx] = { selected: null, showSolution: false };
+        renderQuiz();
+    };
+
+    window.solveTask = (idx) => {
+        userStates[idx].showSolution = true;
+        renderQuiz();
+    };
+
+    // Initialer Start
+    renderQuiz();
+</script>
+
+</body>
+</html>
