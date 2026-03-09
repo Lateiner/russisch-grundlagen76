@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofort-Feedback: Lückentext ПОД</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            background-color: #f0f2f5;
+            color: var(--primary);
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+            font-size: 1.6rem;
+        }
+
+        .intro-box {
+            background-color: #eef7ff;
+            padding: 15px;
+            border-left: 5px solid var(--secondary);
+            margin-bottom: 25px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        /* Wort-Pool */
+        .word-pool-container {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            margin-bottom: 25px;
+        }
+
+        .word-pool-container h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            color: var(--secondary);
+            text-align: center;
+        }
+
+        .word-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .pool-word {
+            background: var(--white);
+            border: 2px solid var(--secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .pool-word.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .pool-word.used {
+            opacity: 0.3;
+            pointer-events: none;
+            border-color: #ccc;
+        }
+
+        /* Textbereich */
+        .story-text {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            font-size: 1.1rem;
+            text-align: justify;
+        }
+
+        .gap {
+            display: inline-block;
+            min-width: 130px;
+            min-height: 30px;
+            border-bottom: 2px solid var(--secondary);
+            background-color: #fdfdfd;
+            margin: 0 5px;
+            padding: 2px 8px;
+            text-align: center;
+            cursor: pointer;
+            vertical-align: middle;
+            font-weight: bold;
+            transition: all 0.3s;
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Sofort-Feedback Klassen */
+        .gap.correct {
+            background-color: #d4edda;
+            border-bottom-color: var(--success);
+            color: var(--success);
+        }
+
+        .gap.incorrect {
+            background-color: #f8d7da;
+            border-bottom-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Steuerung */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button.action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .btn-reset { background-color: #e67e22; }
+        .btn-solution { background-color: var(--secondary); }
+
+        @media (max-width: 600px) {
+            .story-text { font-size: 1rem; line-height: 2.2; }
+            .gap { min-width: 110px; margin: 8px 2px; }
+            button.action-btn { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Die Geschichte: Ein Tag mit ПОД</h1>
+    
+    <div class="intro-box">
+        <p><strong>Sofort-Feedback:</strong> Klicke ein Wort im Pool an und dann auf eine Lücke. Die Lücke färbt sich sofort <strong>grün</strong> (richtig) oder <strong>rot</strong> (falsch). Klicke auf eine gefüllte Lücke, um sie zu leeren.</p>
+    </div>
+
+    <div class="word-pool-container">
+        <h3>Wort-Pool</h3>
+        <div class="word-pool" id="pool"></div>
+    </div>
+
+    <div class="story-text">
+        Это случилось в декабре, <span class="gap" data-answer="под Новый год" id="gap-0"></span>. 
+        День был суматошный. Я был в университете и <span class="gap" data-answer="под конец урока" id="gap-1"></span> 
+        совсем потерял концентрацию. Погода на улице была серая и холодная — прямо <span class="gap" data-answer="под стать" id="gap-2"></span> 
+        моему плохому настроению. Обычно <span class="gap" data-answer="под вечер" id="gap-3"></span> 
+        я чувствую себя лучше, но не в этот раз.
+        <br><br>
+        После занятий мы пошли в кафе. Мой друг Иван был уже немного <span class="gap" data-answer="под градусом" id="gap-4"></span>, 
+        потому что начал праздновать раньше. В кафе было много людей, и Иван <span class="gap" data-answer="под шумок" id="gap-5"></span> 
+        ушёл, не попрощавшись. Я хотел догнать его, но мой начальник позвонил мне с плохими новостями. 
+        Я испугался, что мои ошибки <span class="gap" data-answer="поставили под удар" id="gap-6"></span> наш новый проект. 
+        Шеф очень кричал, и я понял, что просто попался ему <span class="gap" data-answer="под горячую руку" id="gap-7"></span>.
+        К счастью, сейчас всё <span class="gap" data-answer="под присмотром" id="gap-8"></span> коллег, 
+        а я нахожусь <span class="gap" data-answer="под защитой" id="gap-9"></span> закона о труде!
+    </div>
+
+    <div class="controls">
+        <button class="action-btn btn-reset" onclick="resetAll()">Zurücksetzen & Mischen</button>
+        <button class="action-btn btn-solution" onclick="showSolution()">Lösung anzeigen</button>
+    </div>
+</div>
+
+<script>
+    const allWords = [
+        "под Новый год", "под конец урока", "под стать", "под вечер", 
+        "под градусом", "под шумок", "поставили под удар", 
+        "под горячую руку", "под присмотром", "под защитой"
+    ];
+
+    let selectedWord = null;
+
+    function initPool() {
+        const pool = document.getElementById('pool');
+        pool.innerHTML = '';
+        const shuffled = [...allWords].sort(() => Math.random() - 0.5);
+        
+        shuffled.forEach(word => {
+            const div = document.createElement('div');
+            div.className = 'pool-word';
+            div.textContent = word;
+            div.onclick = (e) => selectWord(e, word);
+            pool.appendChild(div);
+        });
+    }
+
+    function selectWord(e, word) {
+        if (e.target.classList.contains('used')) return;
+        
+        document.querySelectorAll('.pool-word').forEach(w => w.classList.remove('selected'));
+        if (selectedWord === word) {
+            selectedWord = null;
+        } else {
+            selectedWord = word;
+            e.target.classList.add('selected');
+        }
+    }
+
+    // Gaps initialisieren
+    document.querySelectorAll('.gap').forEach(gap => {
+        gap.onclick = () => handleGapClick(gap);
+    });
+
+    function handleGapClick(gap) {
+        // Wenn die Lücke schon voll ist: Wort entfernen
+        if (gap.textContent !== "") {
+            const wordToRemove = gap.textContent;
+            
+            // Wort im Pool wieder freigeben
+            document.querySelectorAll('.pool-word').forEach(w => {
+                if (w.textContent === wordToRemove) w.classList.remove('used');
+            });
+
+            gap.textContent = "";
+            gap.classList.remove('correct', 'incorrect');
+            return;
+        }
+
+        // Wenn ein Wort ausgewählt ist: Lücke füllen und direkt prüfen
+        if (selectedWord) {
+            gap.textContent = selectedWord;
+            const isCorrect = selectedWord === gap.getAttribute('data-answer');
+            
+            if (isCorrect) {
+                gap.classList.add('correct');
+                gap.classList.remove('incorrect');
+            } else {
+                gap.classList.add('incorrect');
+                gap.classList.remove('correct');
+            }
+
+            // Wort im Pool als "benutzt" markieren
+            const currentSelected = selectedWord;
+            document.querySelectorAll('.pool-word').forEach(w => {
+                if (w.textContent === currentSelected) {
+                    w.classList.add('used');
+                    w.classList.remove('selected');
+                }
+            });
+
+            selectedWord = null;
+        }
+    }
+
+    function resetAll() {
+        selectedWord = null;
+        document.querySelectorAll('.gap').forEach(gap => {
+            gap.textContent = "";
+            gap.classList.remove('correct', 'incorrect');
+        });
+        initPool();
+    }
+
+    function showSolution() {
+        resetAll();
+        document.querySelectorAll('.gap').forEach(gap => {
+            const ans = gap.getAttribute('data-answer');
+            gap.textContent = ans;
+            gap.classList.add('correct');
+            
+            // Alle Wörter im Pool auf "used" setzen
+            document.querySelectorAll('.pool-word').forEach(w => {
+                if (w.textContent === ans) w.classList.add('used');
+            });
+        });
+    }
+
+    window.onload = initPool;
+</script>
+
+</body>
+</html>
