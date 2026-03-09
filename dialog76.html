@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialog-Trainer: Präposition ПОД</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --chat-bg: #e5ddd5;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f0f2f5;
+            color: var(--primary);
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+        }
+
+        .intro-box {
+            background-color: #eef7ff;
+            padding: 15px;
+            border-left: 5px solid var(--secondary);
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+
+        /* Chat-Design */
+        .chat-container {
+            background-color: var(--chat-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            position: relative;
+        }
+
+        .bubble-left {
+            align-self: flex-start;
+            background-color: var(--white);
+            border-bottom-left-radius: 2px;
+        }
+
+        .bubble-right {
+            align-self: flex-end;
+            background-color: #dcf8c6;
+            border-bottom-right-radius: 2px;
+        }
+
+        .translation {
+            display: block;
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Status-Farben */
+        .status-correct { border-color: var(--success) !important; background-color: #d4edda !important; }
+        .status-incorrect { border-color: var(--danger) !important; background-color: #f8d7da !important; }
+
+        select {
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 2px solid var(--secondary);
+            background-color: white;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .btn-reset { background-color: #95a5a6; }
+        .btn-solution { background-color: var(--secondary); }
+
+        @media (max-width: 600px) {
+            .chat-bubble { max-width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Dialog-Vervollständigung: ПОД</h1>
+    
+    <div class="intro-box">
+        <p>Wähle für jeden Chat die passende idiomatische Antwort aus. Das System gibt dir sofort Feedback (Grün = Richtig / Rot = Falsch).</p>
+    </div>
+
+    <div id="dialog-list">
+        <!-- Dialog 1 -->
+        <div class="chat-container" id="chat-0" data-answer="под вечер">
+            <div class="chat-bubble bubble-left">
+                Привет! Когда ты приедешь?
+                <span class="translation">(Hallo! Wann kommst du an?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Я буду поздно, наверное, только ...
+                <select onchange="checkAnswer(0, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под градусом">под градусом</option>
+                    <option value="под вечер">под вечер</option>
+                    <option value="под стать">под стать</option>
+                </select>
+                <span class="translation">(Ich werde spät da sein, wahrscheinlich erst gegen Abend.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(0)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(0)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 2 -->
+        <div class="chat-container" id="chat-1" data-answer="под Новый год">
+            <div class="chat-bubble bubble-left">
+                Когда лучше покупать подарки?
+                <span class="translation">(Wann kauft man am besten Geschenke?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                В магазинах всегда огромные скидки ...
+                <select onchange="checkAnswer(1, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под Новый год">под Новый год</option>
+                    <option value="под шумок">под шумок</option>
+                    <option value="под удар">под удар</option>
+                </select>
+                <span class="translation">(In den Läden gibt es immer riesige Rabatte kurz vor Neujahr.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(1)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(1)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 3 -->
+        <div class="chat-container" id="chat-2" data-answer="под градусом">
+            <div class="chat-bubble bubble-left">
+                Почему Иван так странно танцует?
+                <span class="translation">(Warum tanzt Ivan so seltsam?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Мне кажется, он уже немного ...
+                <select onchange="checkAnswer(2, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под защитой">под защитой</option>
+                    <option value="под присмотром">под присмотром</option>
+                    <option value="под градусом">под градусом</option>
+                </select>
+                <span class="translation">(Ich glaube, er ist schon ein bisschen angetrunken.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(2)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(2)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 4 -->
+        <div class="chat-container" id="chat-3" data-answer="под шумок">
+            <div class="chat-bubble bubble-left">
+                Где Марк? Мы его потеряли!
+                <span class="translation">(Wo ist Mark? Wir haben ihn verloren!)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Ему стало скучно, и он ушёл ...
+                <select onchange="checkAnswer(3, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под шумок">под шумок</option>
+                    <option value="под горячую руку">под горячую руку</option>
+                    <option value="под вечер">под вечер</option>
+                </select>
+                <span class="translation">(Ihm wurde langweilig und er ist heimlich verschwunden.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(3)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(3)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 5 -->
+        <div class="chat-container" id="chat-4" data-answer="под горячую руку">
+            <div class="chat-bubble bubble-left">
+                Шеф очень злится! Можно войти?
+                <span class="translation">(Der Chef ist sehr wütend! Kann ich reingehen?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Лучше подожди, иначе попадёшься ему ...
+                <select onchange="checkAnswer(4, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под присмотр">под присмотр</option>
+                    <option value="под горячую руку">под горячую руку</option>
+                    <option value="под удар">под удар</option>
+                </select>
+                <span class="translation">(Warte lieber, sonst gerätst du ihm in die Schusslinie.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(4)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(4)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 6 -->
+        <div class="chat-container" id="chat-5" data-answer="под стать">
+            <div class="chat-bubble bubble-left">
+                Тебе нравится эта сумка к платью?
+                <span class="translation">(Gefällt dir diese Tasche zum Kleid?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Да, она идеально тебе ...
+                <select onchange="checkAnswer(5, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под шумок">под шумок</option>
+                    <option value="под стать">под стать</option>
+                    <option value="под градус">под градус</option>
+                </select>
+                <span class="translation">(Ja, sie ist absolut passend für dich.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(5)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(5)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 7 -->
+        <div class="chat-container" id="chat-6" data-answer="под удар">
+            <div class="chat-bubble bubble-left">
+                Твоя ошибка очень серьёзная?
+                <span class="translation">(Ist dein Fehler sehr ernst?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Да, я поставил весь наш проект ...
+                <select onchange="checkAnswer(6, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под вечер">под вечер</option>
+                    <option value="под удар">под удар</option>
+                    <option value="под присмотр">под присмотр</option>
+                </select>
+                <span class="translation">(Ja, ich habe unser ganzes Projekt gefährdet.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(6)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(6)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 8 -->
+        <div class="chat-container" id="chat-7" data-answer="под конец урока">
+            <div class="chat-bubble bubble-left">
+                Студенты всё поняли?
+                <span class="translation">(Haben die Studenten alles verstanden?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Не знаю, они начали задавать вопросы только ...
+                <select onchange="checkAnswer(7, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под конец урока">под конец урока</option>
+                    <option value="под Новый год">под Новый год</option>
+                    <option value="под защитой">под защитой</option>
+                </select>
+                <span class="translation">(Ich weiß nicht, sie haben erst gegen Ende der Stunde angefangen, Fragen zu stellen.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(7)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(7)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 9 -->
+        <div class="chat-container" id="chat-8" data-answer="под присмотром">
+            <div class="chat-bubble bubble-left">
+                Где твой маленький брат?
+                <span class="translation">(Wo ist dein kleiner Bruder?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Он играет в саду, он ... бабушки.
+                <select onchange="checkAnswer(8, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под защитой">под защитой</option>
+                    <option value="под присмотром">под присмотром</option>
+                    <option value="под горячую руку">под горячую руку</option>
+                </select>
+                <span class="translation">(Er spielt im Garten, er ist unter Aufsicht der Oma.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(8)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(8)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- Dialog 10 -->
+        <div class="chat-container" id="chat-9" data-answer="под защитой">
+            <div class="chat-bubble bubble-left">
+                Это здание безопасно?
+                <span class="translation">(Ist dieses Gebäude sicher?)</span>
+            </div>
+            <div class="chat-bubble bubble-right">
+                Конечно, оно находится ... полиции.
+                <select onchange="checkAnswer(9, this)">
+                    <option value="">-- Wähle eine Antwort --</option>
+                    <option value="под защитой">под защитой</option>
+                    <option value="под градусом">под градусом</option>
+                    <option value="под стать">под стать</option>
+                </select>
+                <span class="translation">(Natürlich, es steht unter dem Schutz der Polizei.)</span>
+            </div>
+            <div class="controls">
+                <button class="btn-reset" onclick="resetChat(9)">Reset</button>
+                <button class="btn-solution" onclick="solveChat(9)">Lösung</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkAnswer(id, selectElement) {
+        const chatContainer = document.getElementById('chat-' + id);
+        const correctAnswer = chatContainer.getAttribute('data-answer');
+        const userAnswer = selectElement.value;
+
+        if (userAnswer === "") {
+            chatContainer.classList.remove('status-correct', 'status-incorrect');
+        } else if (userAnswer === correctAnswer) {
+            chatContainer.classList.add('status-correct');
+            chatContainer.classList.remove('status-incorrect');
+        } else {
+            chatContainer.classList.add('status-incorrect');
+            chatContainer.classList.remove('status-correct');
+        }
+    }
+
+    function resetChat(id) {
+        const chatContainer = document.getElementById('chat-' + id);
+        const select = chatContainer.querySelector('select');
+        select.value = "";
+        chatContainer.classList.remove('status-correct', 'status-incorrect');
+    }
+
+    function solveChat(id) {
+        const chatContainer = document.getElementById('chat-' + id);
+        const select = chatContainer.querySelector('select');
+        const correctAnswer = chatContainer.getAttribute('data-answer');
+        select.value = correctAnswer;
+        checkAnswer(id, select);
+    }
+</script>
+
+</body>
+</html>
