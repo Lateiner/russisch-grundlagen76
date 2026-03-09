@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russisch-Assistent: Die Präposition ПОД</title>
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --white: #ffffff;
+            --shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--primary);
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 10px;
+        }
+
+        .intro-box {
+            background-color: #eef7ff;
+            padding: 20px;
+            border-left: 6px solid var(--secondary);
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .exercise-card {
+            background: var(--light);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        /* Status-Farben */
+        .status-correct { border-color: var(--success) !important; background-color: #eaffea !important; }
+        .status-incorrect { border-color: var(--danger) !important; background-color: #ffeaea !important; }
+
+        .button-group {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-reset { background-color: #95a5a6; }
+        .btn-solution { background-color: var(--secondary); }
+
+        select, .drop-zone-text {
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 2px solid #ccc;
+            outline: none;
+        }
+
+        /* Drag/Click-Elemente */
+        .word-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+            min-height: 40px;
+        }
+
+        .word-item {
+            background: var(--white);
+            border: 1px solid var(--secondary);
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .word-item:hover { background: var(--secondary); color: white; }
+
+        .sentence-builder {
+            background: #fff;
+            min-height: 45px;
+            padding: 10px;
+            border: 2px dashed #bbb;
+            border-radius: 4px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .mc-option {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+
+        input[type="radio"] { margin-right: 10px; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .button-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Die Präposition ПОД im Russischen</h1>
+    
+    <div class="intro-box">
+        <p>Die Präposition <strong>ПОД</strong> wird im Russischen oft für Zeitangaben (gegen/kurz vor), Zustände oder feste Ausdrücke verwendet. Hier lernst du die wichtigsten Anwendungen.</p>
+    </div>
+
+    <div id="exercise-list">
+        <!-- TEIL 1: SELECT -->
+        <h2>Teil 1: Zeit & Zustand</h2>
+        <div class="exercise-card" id="ex1">
+            <p>1. Я всегда устаю <select onchange="validateSelect(this, 'под вечер')" data-correct="под вечер">
+                <option value="">--Wähle--</option>
+                <option value="под утро">под утро</option>
+                <option value="под вечер">под вечер</option>
+            </select> (gegen Abend).</p>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetSelect(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveSelect(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex2">
+            <p>2. Он купил подарки <select onchange="validateSelect(this, 'под Новый год')" data-correct="под Новый год">
+                <option value="">--Wähle--</option>
+                <option value="под Новый год">под Новый год</option>
+                <option value="под уроком">под уроком</option>
+            </select> (kurz vor Neujahr).</p>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetSelect(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveSelect(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex3">
+            <p>3. Осторожно, он немного <select onchange="validateSelect(this, 'под градусом')" data-correct="под градусом">
+                <option value="">--Wähle--</option>
+                <option value="под шумок">под шумок</option>
+                <option value="под градусом">под градусом</option>
+            </select> (angetrunken).</p>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetSelect(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveSelect(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex4">
+            <p>4. Студенты начали задавать вопросы <select onchange="validateSelect(this, 'под конец')" data-correct="под конец">
+                <option value="">--Wähle--</option>
+                <option value="под конец">под конец</option>
+                <option value="под утро">под утро</option>
+            </select> урока (gegen Ende der Stunde).</p>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetSelect(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveSelect(this)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- TEIL 2: MC -->
+        <h2>Teil 2: Redewendungen</h2>
+        <div class="exercise-card" id="ex5">
+            <p>5. Was bedeutet „под шумок“?</p>
+            <label class="mc-option"><input type="radio" name="q5" value="wrong" onclick="validateMC(this)"> Laut mitsingen</label>
+            <label class="mc-option"><input type="radio" name="q5" value="correct" onclick="validateMC(this)"> Eine Ablenkung unbemerkt nutzen</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex6">
+            <p>6. Was bedeutet „попасться под горячую руку“?</p>
+            <label class="mc-option"><input type="radio" name="q6" value="correct" onclick="validateMC(this)"> Den Zorn einer bereits wütenden Person abbekommen</label>
+            <label class="mc-option"><input type="radio" name="q6" value="wrong" onclick="validateMC(this)"> Jemandem beim Kochen helfen</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex7">
+            <p>7. „Под стать“ bedeutet...</p>
+            <label class="mc-option"><input type="radio" name="q7" value="correct" onclick="validateMC(this)"> Passend / Ebenbürtig</label>
+            <label class="mc-option"><input type="radio" name="q7" value="wrong" onclick="validateMC(this)"> Unter dem Tisch</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex8">
+            <p>8. Was passiert bei „поставить под удар“?</p>
+            <label class="mc-option"><input type="radio" name="q8" value="wrong" onclick="validateMC(this)"> Man erhält eine Belohnung</label>
+            <label class="mc-option"><input type="radio" name="q8" value="correct" onclick="validateMC(this)"> Man gefährdet etwas/jemanden</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- TEIL 3: KONTEXT -->
+        <h2>Teil 3: Die richtige Situation</h2>
+        <div class="exercise-card" id="ex9">
+            <p>9. Das Wetter ist so trübe wie meine Laune:</p>
+            <label class="mc-option"><input type="radio" name="q9" value="correct" onclick="validateMC(this)"> Погода под стать моему настроению</label>
+            <label class="mc-option"><input type="radio" name="q9" value="wrong" onclick="validateMC(this)"> Погода под градусом</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex10">
+            <p>10. Jemand hat heimlich Geld gestohlen, als alle tanzten:</p>
+            <label class="mc-option"><input type="radio" name="q10" value="wrong" onclick="validateMC(this)"> Он украл под вечер</label>
+            <label class="mc-option"><input type="radio" name="q10" value="correct" onclick="validateMC(this)"> Он украл под шумок</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex11">
+            <p>11. Der Chef ist wütend und du fragst ihn gerade jetzt nach Gehaltserhöhung:</p>
+            <label class="mc-option"><input type="radio" name="q11" value="correct" onclick="validateMC(this)"> Ты попался под горячую руку</label>
+            <label class="mc-option"><input type="radio" name="q11" value="wrong" onclick="validateMC(this)"> Ты под стать шефу</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex12">
+            <p>12. Du hast geheime Daten verraten und die Firma riskiert nun den Ruin:</p>
+            <label class="mc-option"><input type="radio" name="q12" value="wrong" onclick="validateMC(this)"> Ты поставил под шумок</label>
+            <label class="mc-option"><input type="radio" name="q12" value="correct" onclick="validateMC(this)"> Ты поставил компанию под удар</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <!-- TEIL 4: SATZBAU -->
+        <h2>Teil 4: Sätze bilden (Klicke auf die Wörter)</h2>
+        <div class="exercise-card" id="ex13" data-correct-sentence="Он ушёл домой под шумок">
+            <p>13. „Er ging heimlich nach Hause“:</p>
+            <div class="word-pool" id="pool13">
+                <span class="word-item" onclick="addToSentence(this, 'ex13')">Он</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex13')">под</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex13')">ушёл</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex13')">шумок</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex13')">домой</span>
+            </div>
+            <div class="sentence-builder" id="build13"></div>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetSentence('ex13')">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveSentence('ex13')">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex14" data-correct-sentence="Погода под стать настроению">
+            <p>14. „Das Wetter passt zur Stimmung“:</p>
+            <div class="word-pool" id="pool14">
+                <span class="word-item" onclick="addToSentence(this, 'ex14')">под</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex14')">Погода</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex14')">настроению</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex14')">стать</span>
+            </div>
+            <div class="sentence-builder" id="build14"></div>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetSentence('ex14')">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveSentence('ex14')">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex15" data-correct-sentence="Я устаю под вечер">
+            <p>15. „Ich werde gegen Abend müde“:</p>
+            <div class="word-pool" id="pool15">
+                <span class="word-item" onclick="addToSentence(this, 'ex15')">вечер</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex15')">устаю</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex15')">под</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex15')">Я</span>
+            </div>
+            <div class="sentence-builder" id="build15"></div>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetSentence('ex15')">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveSentence('ex15')">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex16" data-correct-sentence="Невеста под стать жениху">
+            <p>16. „Die Braut passt zum Bräutigam“:</p>
+            <div class="word-pool" id="pool16">
+                <span class="word-item" onclick="addToSentence(this, 'ex16')">Невеста</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex16')">под</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex16')">жениху</span>
+                <span class="word-item" onclick="addToSentence(this, 'ex16')">стать</span>
+            </div>
+            <div class="sentence-builder" id="build16"></div>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetSentence('ex16')">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveSentence('ex16')">Lösung</button>
+            </div>
+        </div>
+
+        <!-- TEIL 5: ANALYSE -->
+        <h2>Teil 5: Richtig oder Falsch?</h2>
+        <div class="exercise-card" id="ex17">
+            <p>17. „Под Новый год“ bedeutet „im Sommer“.</p>
+            <label class="mc-option"><input type="radio" name="q17" value="wrong" onclick="validateMC(this)"> Richtig</label>
+            <label class="mc-option"><input type="radio" name="q17" value="correct" onclick="validateMC(this)"> Falsch</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex18">
+            <p>18. Nach „ПОД“ in zeitlichen Ausdrücken steht meist der Akkusativ.</p>
+            <label class="mc-option"><input type="radio" name="q18" value="correct" onclick="validateMC(this)"> Richtig</label>
+            <label class="mc-option"><input type="radio" name="q18" value="wrong" onclick="validateMC(this)"> Falsch</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex19">
+            <p>19. „Ставить под удар“ ist positiv gemeint.</p>
+            <label class="mc-option"><input type="radio" name="q19" value="wrong" onclick="validateMC(this)"> Richtig</label>
+            <label class="mc-option"><input type="radio" name="q19" value="correct" onclick="validateMC(this)"> Falsch</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+
+        <div class="exercise-card" id="ex20">
+            <p>20. „Под градусом“ bezieht sich auf die Temperatur der Luft.</p>
+            <label class="mc-option"><input type="radio" name="q20" value="wrong" onclick="validateMC(this)"> Richtig</label>
+            <label class="mc-option"><input type="radio" name="q20" value="correct" onclick="validateMC(this)"> Falsch</label>
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetMC(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solveMC(this)">Lösung</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- TEIL 1: SELECT LOGIC ---
+    function validateSelect(el, correct) {
+        const card = el.closest('.exercise-card');
+        if (el.value === "") {
+            card.classList.remove('status-correct', 'status-incorrect');
+        } else if (el.value === correct) {
+            card.classList.add('status-correct');
+            card.classList.remove('status-incorrect');
+        } else {
+            card.classList.add('status-incorrect');
+            card.classList.remove('status-correct');
+        }
+    }
+
+    function solveSelect(btn) {
+        const card = btn.closest('.exercise-card');
+        const select = card.querySelector('select');
+        select.value = select.getAttribute('data-correct');
+        validateSelect(select, select.value);
+    }
+
+    function resetSelect(btn) {
+        const card = btn.closest('.exercise-card');
+        const select = card.querySelector('select');
+        select.value = "";
+        card.classList.remove('status-correct', 'status-incorrect');
+    }
+
+    // --- TEIL 2, 3, 5: MC LOGIC ---
+    function validateMC(el) {
+        const card = el.closest('.exercise-card');
+        if (el.value === 'correct') {
+            card.classList.add('status-correct');
+            card.classList.remove('status-incorrect');
+        } else {
+            card.classList.add('status-incorrect');
+            card.classList.remove('status-correct');
+        }
+    }
+
+    function solveMC(btn) {
+        const card = btn.closest('.exercise-card');
+        const correctRadio = card.querySelector('input[value="correct"]');
+        correctRadio.checked = true;
+        validateMC(correctRadio);
+    }
+
+    function resetMC(btn) {
+        const card = btn.closest('.exercise-card');
+        const radios = card.querySelectorAll('input');
+        radios.forEach(r => r.checked = false);
+        card.classList.remove('status-correct', 'status-incorrect');
+    }
+
+    // --- TEIL 4: SATZBAU LOGIC ---
+    function addToSentence(el, cardId) {
+        const builder = document.getElementById('build' + cardId.replace('ex', ''));
+        const newWord = document.createElement('span');
+        newWord.className = 'word-item';
+        newWord.textContent = el.textContent;
+        newWord.onclick = function() { 
+            el.style.display = 'inline-block';
+            this.remove();
+            checkSentence(cardId);
+        };
+        builder.appendChild(newWord);
+        el.style.display = 'none';
+        checkSentence(cardId);
+    }
+
+    function checkSentence(cardId) {
+        const card = document.getElementById(cardId);
+        const builder = document.getElementById('build' + cardId.replace('ex', ''));
+        const correct = card.getAttribute('data-correct-sentence');
+        const current = Array.from(builder.querySelectorAll('.word-item'))
+                          .map(w => w.textContent).join(' ');
+        
+        if (current === "") {
+            card.classList.remove('status-correct', 'status-incorrect');
+        } else if (current === correct) {
+            card.classList.add('status-correct');
+            card.classList.remove('status-incorrect');
+        } else {
+            // Nur als falsch markieren, wenn die Anzahl der Wörter schon erreicht ist
+            const maxWords = correct.split(' ').length;
+            if (current.split(' ').length >= maxWords) {
+                card.classList.add('status-incorrect');
+            } else {
+                card.classList.remove('status-incorrect', 'status-correct');
+            }
+        }
+    }
+
+    function solveSentence(cardId) {
+        resetSentence(cardId);
+        const card = document.getElementById(cardId);
+        const builder = document.getElementById('build' + cardId.replace('ex', ''));
+        const pool = document.getElementById('pool' + cardId.replace('ex', ''));
+        const correctArr = card.getAttribute('data-correct-sentence').split(' ');
+
+        correctArr.forEach(word => {
+            const newWord = document.createElement('span');
+            newWord.className = 'word-item';
+            newWord.textContent = word;
+            builder.appendChild(newWord);
+        });
+
+        const poolItems = pool.querySelectorAll('.word-item');
+        poolItems.forEach(item => item.style.display = 'none');
+        
+        card.classList.add('status-correct');
+        card.classList.remove('status-incorrect');
+    }
+
+    function resetSentence(cardId) {
+        const card = document.getElementById(cardId);
+        const builder = document.getElementById('build' + cardId.replace('ex', ''));
+        const pool = document.getElementById('pool' + cardId.replace('ex', ''));
+        builder.innerHTML = '';
+        const poolItems = pool.querySelectorAll('.word-item');
+        poolItems.forEach(item => item.style.display = 'inline-block');
+        card.classList.remove('status-correct', 'status-incorrect');
+    }
+</script>
+
+</body>
+</html>
